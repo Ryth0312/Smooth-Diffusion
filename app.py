@@ -624,6 +624,14 @@ class wrapper(object):
             int(time.time()), self.tag_diffuser, self.tag_lora, framen, fps)
         vpath = osp.join(vdir, sname+'.mp4')
         frames2mp4(vpath, frames, fps)
+
+        # Dump per-frame PNGs for visualize_interpolation.py
+        # Layout: <vdir>/<sname>/out_imgs/frame_XXX.png
+        out_imgs_dir = osp.join(vdir, sname, 'out_imgs')
+        os.makedirs(out_imgs_dir, exist_ok=True)
+        for i, fr in enumerate(frames):
+            fr_img = fr if isinstance(fr, Image.Image) else Image.fromarray(np.asarray(fr))
+            fr_img.save(osp.join(out_imgs_dir, f'frame_{i:03d}.png'))
         jpath = osp.join(vdir, sname+'.json')
         cfgdict = {
             "method" : "image_interpolation",
